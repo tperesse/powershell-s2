@@ -3,6 +3,7 @@ $Fait = Import-Csv -Delimiter "," -Path "fait.csv"
 $DossierPartage = "G:\Documents\Cours\powershell\"
 
 $Valeur = Get-Content "G:\Documents\Cours\powershell\inventaire.csv" | Select-Object -First 1
+
 Set-Content -Path "${DossierPartage}PretMigration.csv" -Value $Valeur -Encoding UTF8
 $PretMigration = @()
 

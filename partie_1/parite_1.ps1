@@ -8,9 +8,9 @@ do {
     if ($choix -eq 1) {
         # Suppression des comptes inactifs.
         $date = (Get-Date).AddDays(-30)
-        foreach ($user in $listeUsers){
+        foreach ($user in $listeUsers) {
             $username = $user.nom + "." + $user.surname
-            Search-ADAccount -AccountExpired | Where-Object {$_.enabled -eq $False -and $_.SamAccountName -eq "tot.peresse" -and $_.AccountExpirationDate -lt (Get-Date).AddDays(-30)} | Remove-ADUser
+            Search-ADAccount -AccountExpired | Where-Object { $_.enabled -eq $False -and $_.SamAccountName -eq $username -and $_.AccountExpirationDate -lt $date } | Remove-ADUser
             write-host "Suppression ${username}"
         }
         $do = $true
@@ -19,7 +19,7 @@ do {
         # Création des comptes utilisateurs.
         foreach ($user in $listeUsers) {
             $password = $user.nom[0] + "." + $user.surname[0] + "@" + $user.entreprise + (get-date -Format "MM")
-            $username = $user.nom+"."+$user.surname
+            $username = $user.nom + "." + $user.surname
             $initiales = $user.nom[0] + $user.surname[0]
             $nom = $user.nom
             $surname = $user.surname
@@ -27,9 +27,10 @@ do {
             $entreprise = $user.entreprise
             $departement = $user.departement
             $DateExpiration = $user.fincontrat
-            if ($user.estpresent -eq 1){
+            if ($user.estpresent -eq 1) {
                 $estactive = $True
-            } else {
+            }
+            else {
                 $estactive = $False
             }
             Try {
@@ -38,25 +39,25 @@ do {
                     write-host "l'utilisateur existe, aucune action requise"
                 }
                 else {
-                    Get-ADuser -Identity $username | Disable-ADAccount 
+                    Get-ADuser -Identity $username | Disable-ADAccount
                     write-host "${username} a ete desactive"
                 }
             }
             Catch {
                 if ($estactive) {
                     New-ADUser `
-                    -AccountExpirationDate $DateExpiration `
-                    -AccountPassword (ConvertTo-SecureString $password -AsPlainText -Force) `
-                    -ChangePasswordAtLogon $true `
-                    -Company $entreprise `
-                    -Department $departement `
-                    -DisplayName $displayname `
-                    -Enabled $estactive `
-                    -Initials $initiales `
-                    -Name $nom `
-                    -SamAccountName $username `
-                    -Surname $surname `
-                    -GivenName $surname
+                        -AccountExpirationDate $DateExpiration `
+                        -AccountPassword (ConvertTo-SecureString $password -AsPlainText -Force) `
+                        -ChangePasswordAtLogon $true `
+                        -Company $entreprise `
+                        -Department $departement `
+                        -DisplayName $displayname `
+                        -Enabled $estactive `
+                        -Initials $initiales `
+                        -Name $nom `
+                        -SamAccountName $username `
+                        -Surname $surname `
+                        -GivenName $surname
                     Add-ADGroupMember -Identity "Admin local" -Members $username
                     write-host "${username} a ete cree"
                 }
