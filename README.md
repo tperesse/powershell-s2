@@ -1,4 +1,4 @@
-# Partiel de Powershell
+# Partiel de Powershell semestre 2
 
 ## Auteurs
 - Théo PERESSE 4SRC2
