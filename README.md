@@ -1,4 +1,4 @@
-# TP Powershell
+# Partiel de Powershell
 
 ## Auteurs
 - Théo PERESSE 4SRC2
